@@ -26,7 +26,11 @@ go build -o ~/bin/ltr .
 ### Init
 
 To use this tool, you have to init it in the
-desired project / directory / repository by running: `ltr init`
+desired project / directory / repository by running:
+
+```go
+ltr init
+```
 
 ### Tasks
 
