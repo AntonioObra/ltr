@@ -29,7 +29,7 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("failed to init new ltr instance: %w", err)
 		}
 
-		if err := os.MkdirAll(ltrDir+"/tasks", 0o755); err != nil {
+		if err := os.MkdirAll(filepath.Join(ltrDir, "tasks"), 0o755); err != nil {
 			return fmt.Errorf("failed to init new ltr instance: %w", err)
 		}
 
