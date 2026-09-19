@@ -22,3 +22,16 @@ go build -o ~/bin/ltr .
 ```go
 ./ltr config set <key> <value>
 ```
+
+### Init
+
+To use this tool, you have to init it in the
+desired project / directory / repository by running: `ltr init`
+
+### Tasks
+
+#### New Task
+
+```go
+ltr task new <task-name>
+```
