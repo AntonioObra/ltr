@@ -14,13 +14,13 @@ go build -o ~/bin/ltr .
 ### Run
 
 ```go
-./ltr
+ltr
 ```
 
 ### Config
 
 ```go
-./ltr config set <key> <value>
+ltr config set <key> <value>
 ```
 
 ### Init
