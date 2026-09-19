@@ -8,6 +8,7 @@ Last Trace CLI version
 
 ```go
 go build -o ltr main.go
+go build -o ~/bin/ltr .
 ```
 
 ### Run
