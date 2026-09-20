@@ -4,10 +4,19 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
+	"text/tabwriter"
 	"time"
 
 	"github.com/spf13/cobra"
 )
+
+type Task struct {
+	ID        string
+	Name      string
+	Completed bool
+	CreatedAt time.Time
+}
 
 var taskCmd = &cobra.Command{
 	Use:   "task",
@@ -61,8 +70,85 @@ var taskNewCmd = &cobra.Command{
 	},
 }
 
+var taskListCmd = &cobra.Command{
+	Use:   "list",
+	Short: "List all of you  tasks",
+	RunE: func(cmd *cobra.Command, args []string) error {
+		dir, err := os.Getwd()
+		if err != nil {
+			panic(err)
+		}
+
+		dirName := filepath.Base(dir)
+		taskDir := filepath.Join(dir, ".ltr", "tasks")
+
+		entries, err := os.ReadDir(taskDir)
+		if err != nil {
+			return fmt.Errorf("ltr doesnt exists in: %s, %w", dirName, err)
+		}
+
+		var tasks []Task
+
+		for _, entry := range entries {
+			if !entry.IsDir() {
+				continue
+			}
+
+			taskFile := filepath.Join(taskDir, entry.Name(), "task.md")
+
+			content, err := os.ReadFile(taskFile)
+			if err != nil {
+				return fmt.Errorf("failed to list tasks: %w", err)
+			}
+
+			lines := strings.Split(string(content), "\n")
+
+			if len(lines) == 0 {
+				continue
+			}
+
+			name := strings.TrimPrefix(lines[0], "# ")
+			completed := strings.Contains(string(content), "- COMPLETED: [TRUE]")
+			createdAt, err := time.ParseInLocation(
+				"20060102150405",
+				entry.Name(),
+				time.Local,
+			)
+			if err != nil {
+				return fmt.Errorf("failed to list tasks: %w", err)
+			}
+
+			tasks = append(tasks, Task{
+				ID:        entry.Name(),
+				Name:      name,
+				Completed: completed,
+				CreatedAt: createdAt,
+			})
+		}
+
+		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+		fmt.Fprintln(w, "ID\tTASK\tCOMPLETED\tCREATED")
+
+		for _, task := range tasks {
+			fmt.Fprintf(
+				w,
+				"%s\t%s\t%t\t%s\n",
+				task.ID,
+				task.Name,
+				task.Completed,
+				task.CreatedAt.Format("02.01.2006 15:04"),
+			)
+		}
+
+		w.Flush()
+
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(taskCmd)
 
 	taskCmd.AddCommand(taskNewCmd)
+	taskCmd.AddCommand(taskListCmd)
 }
