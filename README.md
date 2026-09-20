@@ -33,14 +33,54 @@ ltr config set <key> <value>
 To use this tool, you have to init it in the
 desired project / directory / repository by running:
 
+By running it created `.ltr` folder and inside `/tasks`, `/snippets` and `/notes` folders.
+
 ```go
 ltr init
 ```
 
 ### Tasks
 
+#### List Tasks
+
+```go
+ltr task list
+```
+
 #### New Task
 
 ```go
 ltr task new <task-name>
+```
+
+#### Delete task
+
+```go
+ltr task delete <task-id>
+```
+
+#### Open task in neovim
+
+```go
+ltr task open <task-id>
+```
+
+### Snippets
+
+#### List snippets
+
+```go
+ltr snippet list
+```
+
+#### New snippet
+
+```go
+ltr snippet new <snippet-name>
+```
+
+#### Delete snippet
+
+```go
+ltr snippet delete <snippet-id>
 ```
