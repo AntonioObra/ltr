@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -205,10 +206,59 @@ var taskDeleteCmd = &cobra.Command{
 	},
 }
 
+var taskOpenCmd = &cobra.Command{
+	Use:   "open [id]",
+	Short: "Open your task in neovim",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		taskID, err := strconv.Atoi(args[0])
+		if err != nil {
+			return fmt.Errorf("invalid task ID: %w", err)
+		}
+
+		dir, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		dirName := filepath.Base(dir)
+		taskDir := filepath.Join(dir, ".ltr", "tasks")
+
+		entries, err := os.ReadDir(taskDir)
+		if err != nil {
+			return fmt.Errorf("ltr doesnt exists in: %s, %w", dirName, err)
+		}
+
+		if taskID < 0 || taskID >= len(entries) {
+			return fmt.Errorf("task ID %d doesn't exist in %s", taskID, dirName)
+		}
+
+		entry := entries[taskID]
+
+		if !entry.IsDir() {
+			return fmt.Errorf("task ID %d is not a task", taskID)
+		}
+
+		taskFile := filepath.Join(taskDir, entry.Name(), "task.md")
+
+		nvim := exec.Command("nvim", taskFile)
+		nvim.Stdin = os.Stdin
+		nvim.Stdout = os.Stdout
+		nvim.Stderr = os.Stderr
+
+		if err := nvim.Run(); err != nil {
+			return fmt.Errorf("failed to open task: %w", err)
+		}
+
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(taskCmd)
 
 	taskCmd.AddCommand(taskNewCmd)
 	taskCmd.AddCommand(taskListCmd)
 	taskCmd.AddCommand(taskDeleteCmd)
+	taskCmd.AddCommand(taskOpenCmd)
 }
