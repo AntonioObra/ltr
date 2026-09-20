@@ -57,7 +57,7 @@ var taskNewCmd = &cobra.Command{
 			return fmt.Errorf("failed to create new task: %w", err)
 		}
 
-		taskDefaultContent := []byte("# " + taskName + "\n\n ---\n\n - COMPLETED: [FALSE] \n\n---\n\n")
+		taskDefaultContent := []byte("# " + taskName + "\n\n---\n\n- COMPLETED: [FALSE]\n\n---\n")
 
 		err = os.WriteFile(
 			filepath.Join(ltrDir, "tasks", timestamp, "task.md"),

@@ -1,0 +1,7 @@
+# Dodati notes
+
+---
+
+- COMPLETED: [FALSE]
+
+---
