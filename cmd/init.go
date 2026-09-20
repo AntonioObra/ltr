@@ -33,6 +33,14 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("failed to init new ltr instance: %w", err)
 		}
 
+		if err := os.MkdirAll(filepath.Join(ltrDir, "snippets"), 0o755); err != nil {
+			return fmt.Errorf("failed to init new ltr instance: %w", err)
+		}
+
+		if err := os.MkdirAll(filepath.Join(ltrDir, "notes"), 0o755); err != nil {
+			return fmt.Errorf("failed to init new ltr instance: %w", err)
+		}
+
 		fmt.Printf("Successfully created new ltr instance in %s directory", dirName)
 		return nil
 	},
