@@ -6,10 +6,12 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
-	"text/tabwriter"
 	"time"
 
 	"github.com/spf13/cobra"
+
+	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/lipgloss/table"
 )
 
 type Task struct {
@@ -129,23 +131,38 @@ var taskListCmd = &cobra.Command{
 			})
 		}
 
-		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-		fmt.Fprintln(w, "ID\tTIMESTAMP\tTASK\tCOMPLETED\tCREATED")
+		t := table.New().
+			Headers("ID", "TIMESTAMP", "TASK", "COMPLETED", "CREATED").
+			Border(lipgloss.NormalBorder()).
+			BorderRow(false)
 
 		for _, task := range tasks {
-			fmt.Fprintf(
-				w,
-				"%d\t%s\t%s\t%t\t%s\n",
-				task.ID,
+			row := []string{
+				strconv.Itoa(task.ID),
 				task.Timestamp,
 				task.Name,
-				task.Completed,
+				strconv.FormatBool(task.Completed),
 				task.CreatedAt.Format("02.01.2006 15:04"),
-			)
+			}
+
+			if task.Completed {
+				t.Row(completedStyle.Render(row[0]),
+					completedStyle.Render(row[1]),
+					completedStyle.Render(row[2]),
+					completedStyle.Render(row[3]),
+					completedStyle.Render(row[4]),
+				)
+			} else {
+				t.Row(pendingStyle.Render(row[0]),
+					pendingStyle.Render(row[1]),
+					pendingStyle.Render(row[2]),
+					pendingStyle.Render(row[3]),
+					pendingStyle.Render(row[4]),
+				)
+			}
 		}
 
-		w.Flush()
-
+		fmt.Println(t)
 		return nil
 	},
 }

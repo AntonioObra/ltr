@@ -17,11 +17,22 @@ import (
 	"os"
 	"strings"
 
+	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
 
 var configFile string
+
+var (
+	completedStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("2"))
+
+	pendingStyle = lipgloss.NewStyle().
+			Foreground(lipgloss.Color("3"))
+
+	normalStyle = lipgloss.NewStyle()
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "ltr",

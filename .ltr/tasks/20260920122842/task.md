@@ -2,6 +2,6 @@
 
 ---
 
-- COMPLETED: [FALSE]
+- COMPLETED: [TRUE]
 
 ---
