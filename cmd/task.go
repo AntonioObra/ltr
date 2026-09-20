@@ -12,7 +12,8 @@ import (
 )
 
 type Task struct {
-	ID        string
+	ID        int
+	Timestamp string
 	Name      string
 	Completed bool
 	CreatedAt time.Time
@@ -89,7 +90,7 @@ var taskListCmd = &cobra.Command{
 
 		var tasks []Task
 
-		for _, entry := range entries {
+		for id, entry := range entries {
 			if !entry.IsDir() {
 				continue
 			}
@@ -119,7 +120,8 @@ var taskListCmd = &cobra.Command{
 			}
 
 			tasks = append(tasks, Task{
-				ID:        entry.Name(),
+				ID:        id,
+				Timestamp: entry.Name(),
 				Name:      name,
 				Completed: completed,
 				CreatedAt: createdAt,
@@ -127,13 +129,14 @@ var taskListCmd = &cobra.Command{
 		}
 
 		w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-		fmt.Fprintln(w, "ID\tTASK\tCOMPLETED\tCREATED")
+		fmt.Fprintln(w, "ID\tTIMESTAMP\tTASK\tCOMPLETED\tCREATED")
 
 		for _, task := range tasks {
 			fmt.Fprintf(
 				w,
-				"%s\t%s\t%t\t%s\n",
+				"%d\t%s\t%s\t%t\t%s\n",
 				task.ID,
+				task.Timestamp,
 				task.Name,
 				task.Completed,
 				task.CreatedAt.Format("02.01.2006 15:04"),
