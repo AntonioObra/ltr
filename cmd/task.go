@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/tabwriter"
 	"time"
@@ -149,9 +150,48 @@ var taskListCmd = &cobra.Command{
 	},
 }
 
+var taskDeleteCmd = &cobra.Command{
+	Use:   "delete [id]",
+	Short: "Delete your task",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		taskId, err := strconv.Atoi(args[0])
+		if err != nil {
+			return err
+		}
+
+		dir, err := os.Getwd()
+		if err != nil {
+			panic(err)
+		}
+
+		dirName := filepath.Base(dir)
+		taskDir := filepath.Join(dir, ".ltr", "tasks")
+
+		entries, err := os.ReadDir(taskDir)
+		if err != nil {
+			return fmt.Errorf("ltr doesnt exists in: %s, %w", dirName, err)
+		}
+
+		if taskId < 0 || taskId >= len(entries) {
+			return fmt.Errorf("task ID %d doesn't exist in %s", taskId, dirName)
+		}
+
+		entry := entries[taskId]
+
+		if err := os.RemoveAll(filepath.Join(taskDir, entry.Name())); err != nil {
+			return fmt.Errorf("Failed to delete task: #%d in %s, %w", taskId, dirName, err)
+		}
+
+		fmt.Printf("Successfully deleted task: ID:%d", taskId)
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(taskCmd)
 
 	taskCmd.AddCommand(taskNewCmd)
 	taskCmd.AddCommand(taskListCmd)
+	taskCmd.AddCommand(taskDeleteCmd)
 }
