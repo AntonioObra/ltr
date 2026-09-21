@@ -76,7 +76,7 @@ var noteNewCmd = &cobra.Command{
 		}
 
 		fmt.Printf("Created new note %s in %s\n", noteName, dirName)
-		return nil
+		return noteListCmd.RunE(taskListCmd, []string{})
 	},
 }
 
@@ -193,8 +193,8 @@ var noteDeleteCmd = &cobra.Command{
 			return fmt.Errorf("Failed to delete note: #%d in %s, %w", noteId, dirName, err)
 		}
 
-		fmt.Printf("Successfully deleted note: ID:%d", noteId)
-		return nil
+		fmt.Printf("Successfully deleted note: ID:%d\n", noteId)
+		return noteListCmd.RunE(taskListCmd, []string{})
 	},
 }
 

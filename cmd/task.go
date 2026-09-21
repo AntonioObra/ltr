@@ -78,7 +78,7 @@ var taskNewCmd = &cobra.Command{
 		}
 
 		fmt.Printf("Created new task %s in %s\n", taskName, dirName)
-		return nil
+		return taskListCmd.RunE(taskListCmd, []string{})
 	},
 }
 
@@ -231,8 +231,8 @@ var taskDeleteCmd = &cobra.Command{
 			return fmt.Errorf("Failed to delete task: #%d in %s, %w", taskId, dirName, err)
 		}
 
-		fmt.Printf("Successfully deleted task: ID:%d", taskId)
-		return nil
+		fmt.Printf("Successfully deleted task: ID:%d\n", taskId)
+		return taskListCmd.RunE(taskListCmd, []string{})
 	},
 }
 
@@ -333,7 +333,7 @@ var taskCompleteCmd = &cobra.Command{
 		}
 
 		fmt.Printf("Task %d marked as completed!\n", taskID)
-		return nil
+		return taskListCmd.RunE(taskListCmd, []string{})
 	},
 }
 

@@ -76,7 +76,7 @@ var snippetNewCmd = &cobra.Command{
 		}
 
 		fmt.Printf("Created new snippet %s in %s\n", snippetName, dirName)
-		return nil
+		return snippetListCmd.RunE(taskListCmd, []string{})
 	},
 }
 
@@ -193,8 +193,8 @@ var snippetDeleteCmd = &cobra.Command{
 			return fmt.Errorf("Failed to delete snippet: #%d in %s, %w", snippetId, dirName, err)
 		}
 
-		fmt.Printf("Successfully deleted snippet: ID:%d", snippetId)
-		return nil
+		fmt.Printf("Successfully deleted snippet: ID:%d\n", snippetId)
+		return snippetListCmd.RunE(taskListCmd, []string{})
 	},
 }
 
