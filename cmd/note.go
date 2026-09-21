@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -135,6 +136,8 @@ var noteListCmd = &cobra.Command{
 				CreatedAt: createdAt,
 			})
 		}
+
+		slices.Reverse(notes)
 
 		t := table.New().
 			Headers("ID", "TIMESTAMP", "note", "CREATED").

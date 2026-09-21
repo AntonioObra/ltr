@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 
 	"github.com/charmbracelet/lipgloss"
@@ -52,14 +53,18 @@ var resourceListCmd = &cobra.Command{
 			return fmt.Errorf("error: %w", err)
 		}
 
+		slices.Reverse(resources)
+
 		t := table.New().
 			Headers("ID", "NAME", "URL").
 			Border(lipgloss.NormalBorder()).
 			BorderRow(false)
 
 		for index, resource := range resources {
+			id := len(resources) - 1 - index
+
 			row := []string{
-				strconv.Itoa(index),
+				strconv.Itoa(id),
 				resource.Name,
 				resource.URL,
 			}

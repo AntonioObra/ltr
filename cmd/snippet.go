@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -155,6 +156,8 @@ var snippetListCmd = &cobra.Command{
 				CreatedAt: createdAt,
 			})
 		}
+
+		slices.Reverse(snippets)
 
 		t := table.New().
 			Headers("ID", "TIMESTAMP", "SNIPPET", "LANGUAGE", "CREATED").

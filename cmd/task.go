@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -162,6 +163,8 @@ var taskListCmd = &cobra.Command{
 				CreatedAt: createdAt,
 			})
 		}
+
+		slices.Reverse(tasks)
 
 		t := table.New().
 			Headers("ID", "TIMESTAMP", "TASK", "COMPLETED", "CREATED").
