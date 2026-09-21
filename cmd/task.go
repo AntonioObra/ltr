@@ -23,6 +23,15 @@ type Task struct {
 	CreatedAt time.Time
 }
 
+func openInEditor(taskFile string) error {
+	nvim := exec.Command("nvim", taskFile)
+	nvim.Stdin = os.Stdin
+	nvim.Stdout = os.Stdout
+	nvim.Stderr = os.Stderr
+
+	return nvim.Run()
+}
+
 var taskCmd = &cobra.Command{
 	Use:   "task",
 	Short: "Manage your tasks in a clean md format",
@@ -61,13 +70,18 @@ var taskNewCmd = &cobra.Command{
 		}
 
 		taskDefaultContent := []byte("# " + taskName + "\n\n---\n\n- COMPLETED: [FALSE]\n\n---\n")
+		taskFile := filepath.Join(ltrDir, "tasks", timestamp, "task.md")
 
 		err = os.WriteFile(
-			filepath.Join(ltrDir, "tasks", timestamp, "task.md"),
+			taskFile,
 			taskDefaultContent, 0o644,
 		)
 		if err != nil {
 			return fmt.Errorf("failed to create new task: %w", err)
+		}
+
+		if err := openInEditor(taskFile); err != nil {
+			return fmt.Errorf("failed to open task: %w", err)
 		}
 
 		fmt.Printf("Created new task %s in %s\n", taskName, dirName)
@@ -264,12 +278,7 @@ var taskOpenCmd = &cobra.Command{
 
 		taskFile := filepath.Join(taskDir, entry.Name(), "task.md")
 
-		nvim := exec.Command("nvim", taskFile)
-		nvim.Stdin = os.Stdin
-		nvim.Stdout = os.Stdout
-		nvim.Stderr = os.Stderr
-
-		if err := nvim.Run(); err != nil {
+		if err := openInEditor(taskFile); err != nil {
 			return fmt.Errorf("failed to open task: %w", err)
 		}
 
