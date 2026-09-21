@@ -18,6 +18,7 @@ type Snippet struct {
 	ID        int
 	Timestamp string
 	Name      string
+	Language  string
 	CreatedAt time.Time
 }
 
@@ -32,6 +33,8 @@ var snippetCmd = &cobra.Command{
 		ltr snippet open <id>
 		ltr snippet delete <id>`,
 }
+
+var snippetLanguage string
 
 var snippetNewCmd = &cobra.Command{
 	Use:   "new [name]",
@@ -60,7 +63,13 @@ var snippetNewCmd = &cobra.Command{
 			return fmt.Errorf("failed to create new snippet: %w", err)
 		}
 
-		snippetDefaultContent := []byte("# " + snippetName + "\n\n ```\nfunc main() {}\n```\n")
+		language := "NONE"
+
+		if snippetLanguage != "" {
+			language = strings.ToUpper(snippetLanguage)
+		}
+
+		snippetDefaultContent := []byte("# " + snippetName + "\n\n---\n\n- LANGUAGE: [" + language + "]\n\n---\n\n```" + language + "\nfunc main() {}\n```\n")
 		snippetFile := filepath.Join(ltrDir, "snippets", timestamp, "snippet.md")
 
 		err = os.WriteFile(
@@ -118,6 +127,7 @@ var snippetListCmd = &cobra.Command{
 			}
 
 			name := strings.TrimPrefix(lines[0], "# ")
+
 			createdAt, err := time.ParseInLocation(
 				"20060102150405",
 				entry.Name(),
@@ -127,32 +137,54 @@ var snippetListCmd = &cobra.Command{
 				return fmt.Errorf("failed to list snippets: %w", err)
 			}
 
+			var language string
+
+			for _, line := range strings.Split(string(content), "\n") {
+				if strings.HasPrefix(line, "- LANGUAGE: [") {
+					language = strings.TrimPrefix(line, "- LANGUAGE: [")
+					language = strings.TrimSuffix(language, "]")
+				}
+			}
+
 			snippets = append(snippets, Snippet{
 				ID:        id,
 				Timestamp: entry.Name(),
 				Name:      name,
+				Language:  language,
 				CreatedAt: createdAt,
 			})
 		}
 
 		t := table.New().
-			Headers("ID", "TIMESTAMP", "SNIPPET", "CREATED").
+			Headers("ID", "TIMESTAMP", "SNIPPET", "LANGUAGE", "CREATED").
 			Border(lipgloss.NormalBorder()).
 			BorderRow(false)
 
-		for _, snippet := range snippets {
+		for index, snippet := range snippets {
 			row := []string{
 				strconv.Itoa(snippet.ID),
 				snippet.Timestamp,
 				snippet.Name,
+				snippet.Language,
 				snippet.CreatedAt.Format("02.01.2006 15:04"),
 			}
 
-			t.Row(normalStyle.Render(row[0]),
-				normalStyle.Render(row[1]),
-				normalStyle.Render(row[2]),
-				normalStyle.Render(row[3]),
-			)
+			if index%2 == 0 {
+				t.Row(blueStyle.Render(row[0]),
+					blueStyle.Render(row[1]),
+					blueStyle.Render(row[2]),
+					blueStyle.Render(row[3]),
+					blueStyle.Render(row[4]),
+				)
+			} else {
+				t.Row(redStyle.Render(row[0]),
+					redStyle.Render(row[1]),
+					redStyle.Render(row[2]),
+					redStyle.Render(row[3]),
+					redStyle.Render(row[4]),
+				)
+			}
+
 		}
 
 		fmt.Println(t)
@@ -248,4 +280,12 @@ func init() {
 	snippetCmd.AddCommand(snippetListCmd)
 	snippetCmd.AddCommand(snippetDeleteCmd)
 	snippetCmd.AddCommand(snippetOpenCmd)
+
+	snippetNewCmd.Flags().StringVarP(
+		&snippetLanguage,
+		"lang",
+		"l",
+		"",
+		"snippet language",
+	)
 }
