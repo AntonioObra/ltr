@@ -23,8 +23,9 @@ type Snippet struct {
 }
 
 var snippetCmd = &cobra.Command{
-	Use:   "snippet",
-	Short: "Manage your snippets in a clean md format",
+	Use:     "snippet",
+	Aliases: []string{"s"},
+	Short:   "Manage your snippets in a clean md format",
 	Long: `Manage your snippets in a clean md format
 
 	Examples:

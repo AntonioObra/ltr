@@ -41,6 +41,8 @@ ltr init
 
 ### Tasks
 
+Alias: **t**
+
 #### List Tasks
 
 On default it lists just uncompleted tasks.
@@ -87,6 +89,8 @@ ltr task complete <task-id>
 
 ### Notes
 
+Alias: **n**
+
 #### List notes
 
 ```go
@@ -112,6 +116,8 @@ ltr note delete <note-id>
 ```
 
 ### Snippets
+
+Alias: **s**
 
 #### List snippets
 
@@ -144,6 +150,8 @@ ltr snippet delete <snippet-id>
 ```
 
 ### Resources
+
+Alias: **r**
 
 Resources are just helpful links to blogs, documentation, stack overflow or anything else that you would need.
 

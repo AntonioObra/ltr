@@ -23,8 +23,9 @@ type Task struct {
 }
 
 var taskCmd = &cobra.Command{
-	Use:   "task",
-	Short: "Manage your tasks in a clean md format",
+	Use:     "task",
+	Aliases: []string{"t"},
+	Short:   "Manage your tasks in a clean md format",
 	Long: `Manage your tasks in a clean md format
 
 	Examples:

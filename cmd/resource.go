@@ -18,8 +18,9 @@ type Resource struct {
 }
 
 var resourceCmd = &cobra.Command{
-	Use:   "resource",
-	Short: "Manage your resources in a clean json format",
+	Use:     "resource",
+	Aliases: []string{"r"},
+	Short:   "Manage your resources in a clean json format",
 	Long: `Manage your resources in a clean json format
 
 	Examples:

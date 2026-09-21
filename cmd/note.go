@@ -22,8 +22,9 @@ type Note struct {
 }
 
 var noteCmd = &cobra.Command{
-	Use:   "note",
-	Short: "Manage your notes in a clean md format",
+	Use:     "note",
+	Aliases: []string{"n"},
+	Short:   "Manage your notes in a clean md format",
 	Long: `Manage your notes in a clean md format
 
 	Examples:

@@ -2,5 +2,9 @@
 	{
 		"name": "ratata",
 		"url": "https://lol"
+	},
+	{
+		"name": "test",
+		"url": "mars"
 	}
 ]
