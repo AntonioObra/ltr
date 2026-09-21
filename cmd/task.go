@@ -75,9 +75,21 @@ var taskNewCmd = &cobra.Command{
 	},
 }
 
+var (
+	listCompleted bool
+	listAll       bool
+)
+
 var taskListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List all of you  tasks",
+	Short: "List all of your tasks",
+	PreRunE: func(cmd *cobra.Command, args []string) error {
+		if listCompleted && listAll {
+			return fmt.Errorf("cannot use -c and -a together")
+		}
+
+		return nil
+	},
 	RunE: func(cmd *cobra.Command, args []string) error {
 		dir, err := os.Getwd()
 		if err != nil {
@@ -112,8 +124,19 @@ var taskListCmd = &cobra.Command{
 				continue
 			}
 
-			name := strings.TrimPrefix(lines[0], "# ")
 			completed := strings.Contains(string(content), "- COMPLETED: [TRUE]")
+
+			if !listAll {
+				if listCompleted && !completed {
+					continue
+				}
+
+				if !listCompleted && completed {
+					continue
+				}
+			}
+
+			name := strings.TrimPrefix(lines[0], "# ")
 			createdAt, err := time.ParseInLocation(
 				"20060102150405",
 				entry.Name(),
@@ -261,4 +284,20 @@ func init() {
 	taskCmd.AddCommand(taskListCmd)
 	taskCmd.AddCommand(taskDeleteCmd)
 	taskCmd.AddCommand(taskOpenCmd)
+
+	taskListCmd.Flags().BoolVarP(
+		&listCompleted,
+		"completed",
+		"c",
+		false,
+		"list completed tasks",
+	)
+
+	taskListCmd.Flags().BoolVarP(
+		&listAll,
+		"all",
+		"a",
+		false,
+		"list all tasks",
+	)
 }
