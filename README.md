@@ -142,3 +142,27 @@ ltr snippet open <snippet-id>
 ```go
 ltr snippet delete <snippet-id>
 ```
+
+### Resources
+
+Resources are just helpful links to blogs, documentation, stack overflow or anything else that you would need.
+
+They live in a `.ltr/resources.json` file.
+
+#### List resources
+
+```go
+ltr resource list
+```
+
+#### New resource
+
+```go
+ltr resource new <resource-name> <resource-url>
+```
+
+#### Delete resource
+
+```go
+ltr resource delete <resource-id>
+```

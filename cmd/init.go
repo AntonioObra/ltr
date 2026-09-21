@@ -41,6 +41,14 @@ var initCmd = &cobra.Command{
 			return fmt.Errorf("failed to init new ltr instance: %w", err)
 		}
 
+		err = os.WriteFile(
+			filepath.Join(ltrDir, "resources.json"),
+			[]byte("[\n\n]"), 0o644,
+		)
+		if err != nil {
+			return fmt.Errorf("failed to create new task: %w", err)
+		}
+
 		fmt.Printf("Successfully created new ltr instance in %s directory", dirName)
 		return nil
 	},
