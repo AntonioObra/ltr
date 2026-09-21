@@ -125,6 +125,12 @@ ltr snippet list
 ltr snippet new <snippet-name>
 ```
 
+#### Open snippet
+
+```go
+ltr snippet open <snippet-id>
+```
+
 #### Delete snippet
 
 ```go

@@ -8,9 +8,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spf13/cobra"
+
 	"github.com/charmbracelet/lipgloss"
 	"github.com/charmbracelet/lipgloss/table"
-	"github.com/spf13/cobra"
 )
 
 type Snippet struct {
@@ -28,6 +29,7 @@ var snippetCmd = &cobra.Command{
 	Examples:
 		ltr snippet list
 		ltr snippet new <name>
+		ltr snippet open <id>
 		ltr snippet delete <id>`,
 }
 
@@ -58,14 +60,19 @@ var snippetNewCmd = &cobra.Command{
 			return fmt.Errorf("failed to create new snippet: %w", err)
 		}
 
-		snippetDefaultContent := []byte("# " + snippetName + "\n\n---\n")
+		snippetDefaultContent := []byte("# " + snippetName + "\n")
+		snippetFile := filepath.Join(ltrDir, "snippets", timestamp, "snippet.md")
 
 		err = os.WriteFile(
-			filepath.Join(ltrDir, "snippets", timestamp, "snippet.md"),
+			snippetFile,
 			snippetDefaultContent, 0o644,
 		)
 		if err != nil {
 			return fmt.Errorf("failed to create new snippet: %w", err)
+		}
+
+		if err := openInEditor(snippetFile); err != nil {
+			return fmt.Errorf("failed to open snippet: %w", err)
 		}
 
 		fmt.Printf("Created new snippet %s in %s\n", snippetName, dirName)
@@ -75,7 +82,7 @@ var snippetNewCmd = &cobra.Command{
 
 var snippetListCmd = &cobra.Command{
 	Use:   "list",
-	Short: "List all of you  snippets",
+	Short: "List all of your snippets",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		dir, err := os.Getwd()
 		if err != nil {
@@ -191,10 +198,54 @@ var snippetDeleteCmd = &cobra.Command{
 	},
 }
 
+var snippetOpenCmd = &cobra.Command{
+	Use:   "open [id]",
+	Short: "Open your snippet in neovim",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		snippetID, err := strconv.Atoi(args[0])
+		if err != nil {
+			return fmt.Errorf("invalid snippet ID: %w", err)
+		}
+
+		dir, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		dirName := filepath.Base(dir)
+		snippetDir := filepath.Join(dir, ".ltr", "snippets")
+
+		entries, err := os.ReadDir(snippetDir)
+		if err != nil {
+			return fmt.Errorf("ltr doesnt exists in: %s, %w", dirName, err)
+		}
+
+		if snippetID < 0 || snippetID >= len(entries) {
+			return fmt.Errorf("snippet ID %d doesn't exist in %s", snippetID, dirName)
+		}
+
+		entry := entries[snippetID]
+
+		if !entry.IsDir() {
+			return fmt.Errorf("snippet ID %d is not a snippet", snippetID)
+		}
+
+		snippetFile := filepath.Join(snippetDir, entry.Name(), "snippet.md")
+
+		if err := openInEditor(snippetFile); err != nil {
+			return fmt.Errorf("failed to open snippet: %w", err)
+		}
+
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(snippetCmd)
 
 	snippetCmd.AddCommand(snippetNewCmd)
 	snippetCmd.AddCommand(snippetListCmd)
 	snippetCmd.AddCommand(snippetDeleteCmd)
+	snippetCmd.AddCommand(snippetOpenCmd)
 }

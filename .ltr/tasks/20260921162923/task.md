@@ -2,7 +2,7 @@
 
 ---
 
-- COMPLETED: [FALSE]
+- COMPLETED: [TRUE]
 
 ---
 
