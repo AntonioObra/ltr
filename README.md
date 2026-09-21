@@ -16,7 +16,7 @@ go build -o ltr main.go
 go build -o ~/bin/ltr .
 ```
 
-### Run
+## Use
 
 ```go
 ltr
@@ -38,6 +38,7 @@ By running it created `.ltr` folder and inside `/tasks`, `/snippets` and `/notes
 ```go
 ltr init
 ```
+---
 
 ### Tasks
 
@@ -86,6 +87,7 @@ ltr task open <task-id>
 ```go
 ltr task complete <task-id>
 ```
+---
 
 ### Notes
 
@@ -114,6 +116,7 @@ ltr note open <note-id>
 ```go
 ltr note delete <note-id>
 ```
+---
 
 ### Snippets
 
@@ -148,6 +151,7 @@ ltr snippet open <snippet-id>
 ```go
 ltr snippet delete <snippet-id>
 ```
+---
 
 ### Resources
 
