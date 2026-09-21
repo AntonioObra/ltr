@@ -125,6 +125,12 @@ ltr snippet list
 ltr snippet new <snippet-name>
 ```
 
+By default this add _language_ **NONE** to the snippet. You can add language by using flag `-l` like this:
+
+```go
+ltr snippet new <snippet-name> -l <lang>
+```
+
 #### Open snippet
 
 ```go
