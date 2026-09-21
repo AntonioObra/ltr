@@ -1,3 +1,0 @@
-# Novi snippet
-
----

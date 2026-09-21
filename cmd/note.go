@@ -60,7 +60,7 @@ var noteNewCmd = &cobra.Command{
 			return fmt.Errorf("failed to create new note: %w", err)
 		}
 
-		noteDefaultContent := []byte("# " + noteName + "\n")
+		noteDefaultContent := []byte("# " + noteName + "\n\nWrite your note here...")
 		noteFile := filepath.Join(ltrDir, "notes", timestamp, "note.md")
 
 		err = os.WriteFile(
