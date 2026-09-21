@@ -60,7 +60,7 @@ var snippetNewCmd = &cobra.Command{
 			return fmt.Errorf("failed to create new snippet: %w", err)
 		}
 
-		snippetDefaultContent := []byte("# " + snippetName + "\n")
+		snippetDefaultContent := []byte("# " + snippetName + "\n\n ```\nfunc main() {}\n```\n")
 		snippetFile := filepath.Join(ltrDir, "snippets", timestamp, "snippet.md")
 
 		err = os.WriteFile(
