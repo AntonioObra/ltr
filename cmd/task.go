@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -21,15 +20,6 @@ type Task struct {
 	Name      string
 	Completed bool
 	CreatedAt time.Time
-}
-
-func openInEditor(taskFile string) error {
-	nvim := exec.Command("nvim", taskFile)
-	nvim.Stdin = os.Stdin
-	nvim.Stdout = os.Stdout
-	nvim.Stderr = os.Stderr
-
-	return nvim.Run()
 }
 
 var taskCmd = &cobra.Command{
