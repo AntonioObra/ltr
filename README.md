@@ -43,8 +43,22 @@ ltr init
 
 #### List Tasks
 
+On default it lists just uncompleted tasks.
+
 ```go
 ltr task list
+```
+
+List only completed tasks
+
+```go
+ltr task list -c
+```
+
+List all tasks
+
+```go
+ltr task list -a
 ```
 
 #### New Task
