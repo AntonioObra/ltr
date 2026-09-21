@@ -39,7 +39,10 @@ var taskCmd = &cobra.Command{
 
 	Examples:
 		ltr task list
-		ltr task new <name>`,
+		ltr task new <name>
+		ltr task open <id>
+		ltr task delete <id>
+		ltr task complete <id>`,
 }
 
 var taskNewCmd = &cobra.Command{
@@ -286,6 +289,64 @@ var taskOpenCmd = &cobra.Command{
 	},
 }
 
+var taskCompleteCmd = &cobra.Command{
+	Use:   "complete [id]",
+	Short: "Mark task as completed",
+	Args:  cobra.ExactArgs(1),
+	RunE: func(cmd *cobra.Command, args []string) error {
+		taskID, err := strconv.Atoi(args[0])
+		if err != nil {
+			return fmt.Errorf("invalid task ID: %w", err)
+		}
+
+		dir, err := os.Getwd()
+		if err != nil {
+			return err
+		}
+
+		dirName := filepath.Base(dir)
+		taskDir := filepath.Join(dir, ".ltr", "tasks")
+
+		entries, err := os.ReadDir(taskDir)
+		if err != nil {
+			return fmt.Errorf("ltr doesnt exists in: %s, %w", dirName, err)
+		}
+
+		if taskID < 0 || taskID >= len(entries) {
+			return fmt.Errorf("task ID %d doesn't exist in %s", taskID, dirName)
+		}
+
+		entry := entries[taskID]
+
+		if !entry.IsDir() {
+			return fmt.Errorf("task ID %d is not a task", taskID)
+		}
+
+		taskFile := filepath.Join(taskDir, entry.Name(), "task.md")
+
+		content, err := os.ReadFile(taskFile)
+		if err != nil {
+			return fmt.Errorf("failed to read task: %w", err)
+		}
+
+		old := "- COMPLETED: [FALSE]"
+		new := "- COMPLETED: [TRUE]"
+
+		updatedContent := strings.Replace(string(content), old, new, 1)
+
+		if string(content) == updatedContent {
+			return fmt.Errorf("task %d is already completed", taskID)
+		}
+
+		if err := os.WriteFile(taskFile, []byte(updatedContent), 0o644); err != nil {
+			return fmt.Errorf("failed to complete task: %w", err)
+		}
+
+		fmt.Printf("Task %d marked as completed!\n", taskID)
+		return nil
+	},
+}
+
 func init() {
 	rootCmd.AddCommand(taskCmd)
 
@@ -293,6 +354,7 @@ func init() {
 	taskCmd.AddCommand(taskListCmd)
 	taskCmd.AddCommand(taskDeleteCmd)
 	taskCmd.AddCommand(taskOpenCmd)
+	taskCmd.AddCommand(taskCompleteCmd)
 
 	taskListCmd.Flags().BoolVarP(
 		&listCompleted,

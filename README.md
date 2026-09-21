@@ -79,6 +79,12 @@ ltr task delete <task-id>
 ltr task open <task-id>
 ```
 
+#### Complete task
+
+```go
+ltr task complete <task-id>
+```
+
 ### Snippets
 
 #### List snippets
