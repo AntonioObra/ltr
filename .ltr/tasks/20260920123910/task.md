@@ -2,8 +2,8 @@
 
 ---
 
-- COMPLETED: [FALSE]
+- COMPLETED: [TRUE]
 
 ---
 
-Ma ide gas
+Napraviti za notes isto sve sto ima i tasks bez completed statusa i mogucnosti da se complete-a naravno.
