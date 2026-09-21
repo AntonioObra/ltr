@@ -85,6 +85,32 @@ ltr task open <task-id>
 ltr task complete <task-id>
 ```
 
+### Notes
+
+#### List notes
+
+```go
+ltr note list
+```
+
+#### New note
+
+```go
+ltr note new <note-name>
+```
+
+#### Open note
+
+```go
+ltr note open <note-id>
+```
+
+#### Delete note
+
+```go
+ltr note delete <note-id>
+```
+
 ### Snippets
 
 #### List snippets
