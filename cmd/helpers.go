@@ -18,7 +18,7 @@ var (
 	blueStyle   = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("12"))
 	redStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("202"))
+			Foreground(lipgloss.Color("9"))
 )
 
 func openInEditor(taskFile string) error {

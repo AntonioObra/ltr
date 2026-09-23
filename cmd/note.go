@@ -99,6 +99,11 @@ var noteListCmd = &cobra.Command{
 			return fmt.Errorf("ltr doesnt exists in: %s, %w", dirName, err)
 		}
 
+		if len(entries) == 0 {
+			fmt.Println(redStyle.Render("No notes found..."))
+			return nil
+		}
+
 		var notes []Note
 
 		for id, entry := range entries {

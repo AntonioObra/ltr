@@ -53,6 +53,11 @@ var resourceListCmd = &cobra.Command{
 			return fmt.Errorf("error: %w", err)
 		}
 
+		if len(resources) == 0 {
+			fmt.Println(redStyle.Render("No resources found..."))
+			return nil
+		}
+
 		slices.Reverse(resources)
 
 		t := table.New().

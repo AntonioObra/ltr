@@ -113,6 +113,11 @@ var taskListCmd = &cobra.Command{
 			return fmt.Errorf("ltr doesnt exists in: %s, %w", dirName, err)
 		}
 
+		if len(entries) == 0 {
+			fmt.Println(redStyle.Render("No tasks found..."))
+			return nil
+		}
+
 		var tasks []Task
 
 		for id, entry := range entries {

@@ -108,6 +108,11 @@ var snippetListCmd = &cobra.Command{
 			return fmt.Errorf("ltr doesnt exists in: %s, %w", dirName, err)
 		}
 
+		if len(entries) == 0 {
+			fmt.Println(redStyle.Render("No snippets found..."))
+			return nil
+		}
+
 		var snippets []Snippet
 
 		for id, entry := range entries {
